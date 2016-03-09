@@ -20,12 +20,16 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
-Plugin 'andeepravi/refactor-rails'
+"Plugin 'andeepravi/refactor-rails'
 "Plugin 'bling/vim-airline'
+Plugin 'bling/vim-airline'
 " Plugin 'benmills/vimux'
+Plugin 'kien/ctrlp.vim'
 Plugin 'tpope/vim-endwise'
 Plugin 'scrooloose/nerdtree'
 Plugin 'kchmck/vim-coffee-script'
+Plugin 'lilydjwg/colorizer'
+Plugin 'rking/ag.vim'
 
 " Brief help
 " :PluginList       - lists configured plugins
@@ -154,13 +158,14 @@ set tabstop=2       " 2 spaces for a tab
 set shiftwidth=2    " 2 spaces for autoindenting
 set softtabstop=2   " when <BS>, pretend a tab is removed even if spaces
 set expandtab       " expand tabs to spaces (overloadable by file type)
+set hlsearch
 
 " Scrolling
 "set scrolloff=5         " show context above/below cursor line
 "set sidescrolloff=10    " number of cols from horizontal edge to  start scrolling
 "set sidescroll=1        " number of cols to scroll at a time
 
-set clipboard=unnamed     " yank and paste with the system clipboard
+"set clipboard=unnamed     " yank and paste with the system clipboard
 set hidden
 
 " show cursorline only in active window
@@ -173,4 +178,13 @@ endif
 imap jj <esc>
 
 " vim-airline settings
+"let g:airline_left_sep = '▶'
+"let g:airline_left_sep = ''
+let g:airline_left_sep = '»'
+"let g:airline_right_sep = '◀'
 "let g:airline_theme='dark'
+let g:airline#extensions#tabline#ebabled = 1
+"let g:airline#extensions#tabline#fnamemod = ':t'
+
+" CTags
+set tags+=./.git/tags

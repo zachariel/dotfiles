@@ -49,7 +49,7 @@ plugins=(git)
 
 # User configuration
 
-export PATH="/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@buzzbomb/bin:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/zachariel/.rvm/rubies/ruby-1.9.3-p551/bin:/Users/zachariel/.rvm/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="$PATH:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@buzzbomb/bin:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/zachariel/.rvm/rubies/ruby-1.9.3-p551/bin:/Users/zachariel/.rvm/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -79,3 +79,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export TERM="xterm-256color"
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export SSL_CERT_FILE=/usr/local/etc/openssl/certs/cert.pem
