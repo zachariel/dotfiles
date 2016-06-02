@@ -30,6 +30,8 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'lilydjwg/colorizer'
 Plugin 'rking/ag.vim'
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
 
 " Brief help
 " :PluginList       - lists configured plugins
