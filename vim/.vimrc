@@ -19,10 +19,12 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-rails'
 "Plugin 'andeepravi/refactor-rails'
 "Plugin 'bling/vim-airline'
 Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 " Plugin 'benmills/vimux'
 Plugin 'kien/ctrlp.vim'
 Plugin 'tpope/vim-endwise'
@@ -32,6 +34,9 @@ Plugin 'lilydjwg/colorizer'
 Plugin 'rking/ag.vim'
 Plugin 'mattn/webapi-vim'
 Plugin 'mattn/gist-vim'
+Plugin 'bitc/vim-bad-whitespace'
+Plugin 'honza/vim-snippets'
+Plugin 'joonty/vdebug'
 
 " Brief help
 " :PluginList       - lists configured plugins
@@ -91,10 +96,19 @@ set foldenable
 set history=1000
 "set ffs=unix,mac,dos    " default file types
 
+" Open new split panes to right and bottom, which feels more natural
+"set splitbelow
+"set splitright
+
 " Encoding
 set termencoding=utf-8
 set encoding=utf-8
 
+"HTML Editing
+set matchpairs+=<:>
+let g:html_indent_tags = 'li\|p'
+
+set rnu " Relative numbers
 "" Setup automatic text formatting/wrapping (previously: grn1 )
 "set formatoptions=
 "set formatoptions-=t              " don't autowrap text
@@ -146,7 +160,8 @@ endif
 " silent!
 let g:solarized_termtrans = 1
 "let g:solarized_termcolors=256
-set background=dark
+"set background=dark
+set background=light
 colorscheme solarized
 
 " Folding setting
@@ -170,6 +185,46 @@ set hlsearch
 "set clipboard=unnamed     " yank and paste with the system clipboard
 set hidden
 
+" Python, PEP-008
+au BufRead,BufNewFile *.py,*.pyw set expandtab
+au BufRead,BufNewFile *.py,*.pyw set textwidth=139
+au BufRead,BufNewFile *.py,*.pyw set tabstop=4
+au BufRead,BufNewFile *.py,*.pyw set softtabstop=4
+au BufRead,BufNewFile *.py,*.pyw set shiftwidth=4
+au BufRead,BufNewFile *.py,*.pyw set autoindent
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /\s\+$/
+au         BufNewFile *.py,*.pyw set fileformat=unix
+au BufRead,BufNewFile *.py,*.pyw let b:comment_leader = '#'
+au BufRead,BufNewFile *.py,*.pyw set makeprg=python3\ %
+au BufRead,BufNewFile *.py,*.pyw set autowrite
+
+" PHP Coding
+au BufRead,BufNewFile *.php set expandtab
+au BufRead,BufNewFile *.php set textwidth=80
+au BufRead,BufNewFile *.php set tabstop=2
+au BufRead,BufNewFile *.php set softtabstop=2
+au BufRead,BufNewFile *.php set shiftwidth=2
+au BufRead,BufNewFile *.php set autoindent
+au BufRead,BufNewFile *.php match BadWhitespace /^\t\+/
+au BufRead,BufNewFile *.php match BadWhitespace /\s\+$/
+au         BufNewFile *.php set fileformat=unix
+au BufRead,BufNewFile *.php let b:comment_leader = '//'
+au BufRead,BufNewFile *.php set makeprg=php\ -l\ %
+au BufRead,BufNewFile *.php set autowrite
+
+" HAML
+au BufRead,BufNewFile *haml.blade.php set tabstop=2
+au BufRead,BufNewFile *haml.blade.php set softtabstop=2
+au BufRead,BufNewFile *haml.blade.php set shiftwidth=2
+au BufRead,BufNewFile *haml.blade.php set autoindent
+
+" Ruby Coding
+au BufRead,BufNewFile *.rb match BadWhitespace /\s\+$/
+au BufRead,BufNewFile *.rb set tabstop=2
+au BufRead,BufNewFile *.rb set softtabstop=2
+au BufRead,BufNewFile *.rb set shiftwidth=2
+
 " show cursorline only in active window
 if has("autocmd")
 "  autocmd WinLeave * set nocursorline
@@ -180,13 +235,87 @@ endif
 imap jj <esc>
 
 " vim-airline settings
+let g:airline_theme='papercolor'
 "let g:airline_left_sep = '▶'
 "let g:airline_left_sep = ''
-let g:airline_left_sep = '»'
+"let g:airline_left_sep = '»'
 "let g:airline_right_sep = '◀'
 "let g:airline_theme='dark'
-let g:airline#extensions#tabline#ebabled = 1
+"let g:airline#extensions#tabline#ebabled = 1
 "let g:airline#extensions#tabline#fnamemod = ':t'
+"let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline_powerline_fonts = 1
+
+" Vdebug options / xdebug
+let g:vdebug_options = {}
+let g:vdebug_options["port"] = 9000
+let g:vdebug_options["ide_key"] = 'vagrant'
+let g:vdebug_options["path_maps"] = {
+      \"/home/vagrant/Code/iawomen": "/Users/zachariel/Development/php/laravel/IAWomen"
+      \}
+" Ctrl-P
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_max_depth=40
+let g:ctrlp_max_files=0
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
+  \ 'file': '\.so$\|\.dat$|\.DS_Store$'
+  \}
 
 " CTags
 set tags+=./.git/tags
+
+function! RunPHPUnitTest(filter)
+    let l:old_folder = getcwd() " save current directory
+    if !filereadable("phpunit.xml")
+      cd %:p:h " cd into file's folder
+    endif
+
+    if a:filter == 1
+        "normal! T yw
+        let result = system("phpunit")
+    elseif a:filter == 2
+        "let result = system("phpunit")
+        let l:method_name = matchstr(getline('.'), '\vfunction \zs(\w+)')
+
+        if !empty(l:method_name)
+          echo "Testing method '" . l:method_name . "'"
+          let result = system("phpunit --no-coverage --filter ". l:method_name ." " . expand('%:t:r'). " " . @%)
+        else
+          let result = "Position cursor over line with test method declaration"
+        endif
+    else
+        let result = system("phpunit --no-coverage " . bufname("%"))
+    endif
+
+    "let l:win_number = bufwinnr('__PHPUnit_Result__')
+
+    "if l:win_number == -1
+    "  split __PHPUnit_Result__
+    "else
+    "  exe l:win_number . "wincmd w"
+    "endif
+
+    "setlocal modifiable
+    "normal! ggdG
+    "setlocal buftype=nofile
+    "call append(0, split(result, '\v\n'))
+    "setlocal nomodifiable
+    echo result
+    cd `=l:old_folder` " returns to previous folder
+endfunction
+
+function! PHPUnitRunAll()
+  call RunPHPUnitTest(1)
+endfunction
+
+function! PHPUnitRunFile()
+  call RunPHPUnitTest(0)
+endfunction
+function! PHPUnitRunMethod()
+  call RunPHPUnitTest(2)
+endfunction
+
+nnoremap <leader>u :call PHPUnitRunFile()<cr>
+nnoremap <leader>f :call PHPUnitRunAll()<cr>
+nnoremap <leader>m :call PHPUnitRunMethod()<cr>

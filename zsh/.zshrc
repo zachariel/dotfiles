@@ -5,7 +5,8 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="pygmalion"
+#ZSH_THEME="pygmalion"
+ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -49,8 +50,9 @@ plugins=(git)
 
 # User configuration
 
-export PATH="$PATH:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@buzzbomb/bin:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/zachariel/.rvm/rubies/ruby-1.9.3-p551/bin:/Users/zachariel/.rvm/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
+#/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@buzzbomb/bin:/Users/zachariel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/zachariel/.rvm/rubies/ruby-1.9.3-p551/bin:/Users/zachariel/.rvm/bin:
 
 source $ZSH/oh-my-zsh.sh
 
@@ -78,7 +80,11 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-export TERM="xterm-256color"
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export SSL_CERT_FILE=/usr/local/etc/openssl/certs/cert.pem
+export TERM="xterm-256color"
+#export LARAVEL_HOME="$HOME/.composer/vendor/bin"
+
+#export SSL_CERT_FILE=/usr/local/etc/openssl/certs/cert.pem
+export PATH="$PATH:$LARAVEL_HOME"
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH fo rscripting
+export PATH="/usr/local/sbin:$PATH"
