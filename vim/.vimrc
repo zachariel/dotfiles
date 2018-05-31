@@ -276,19 +276,19 @@ function! RunPHPUnitTest(filter)
 
     if a:filter == 1
         "normal! T yw
-        let result = system("phpunit")
+        let result = system("vendor/bin/phpunit")
     elseif a:filter == 2
         "let result = system("phpunit")
         let l:method_name = matchstr(getline('.'), '\vfunction \zs(\w+)')
 
         if !empty(l:method_name)
           echo "Testing method '" . l:method_name . "'"
-          let result = system("phpunit --no-coverage --filter ". l:method_name ." " . expand('%:t:r'). " " . @%)
+          let result = system("vendor/bin/phpunit --no-coverage --filter ". l:method_name ." " . expand('%:t:r'). " " . @%)
         else
           let result = "Position cursor over line with test method declaration"
         endif
     else
-        let result = system("phpunit --no-coverage " . bufname("%"))
+        let result = system("vendor/bin/phpunit --no-coverage " . bufname("%"))
     endif
 
     "let l:win_number = bufwinnr('__PHPUnit_Result__')
