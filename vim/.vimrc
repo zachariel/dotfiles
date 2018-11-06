@@ -21,7 +21,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'tpope/vim-fugitive'
+"Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-rails'
 "Plugin 'andeepravi/refactor-rails'
@@ -39,7 +39,10 @@ Plugin 'mattn/webapi-vim'
 Plugin 'mattn/gist-vim'
 Plugin 'bitc/vim-bad-whitespace'
 Plugin 'honza/vim-snippets'
-Plugin 'joonty/vdebug'
+"Plugin 'joonty/vdebug'
+Plugin 'lambdalisue/gina.vim'
+Plugin 'thoughtbot/vim-rspec'
+Bundle 'jgdavey/tslime.vim'
 
 " Brief help
 " :PluginList       - lists configured plugins
@@ -164,7 +167,7 @@ endif
 let g:solarized_termtrans = 1
 "let g:solarized_termcolors=256
 "set background=dark
-set background=light
+set background=dark
 colorscheme solarized
 
 " Folding setting
@@ -236,6 +239,7 @@ endif
 
 " Map escape to jj -- much faster to reach and type
 imap jj <esc>
+inoremap jj <ESC>
 
 " vim-airline settings
 let g:airline_theme='papercolor'
@@ -248,6 +252,10 @@ let g:airline_theme='papercolor'
 "let g:airline#extensions#tabline#fnamemod = ':t'
 "let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline_powerline_fonts = 1
+" for tmuxline + vim-airline integration
+let g:airline#extensions#tmuxline#enabled = 1
+" start tmuxline even without vim running
+let airline#extensions#tmuxline#snapshot_file = "~/.tmux-status.conf"
 
 " Vdebug options / xdebug
 let g:vdebug_options = {}
@@ -268,57 +276,65 @@ let g:ctrlp_custom_ignore = {
 " CTags
 set tags+=./.git/tags
 
-function! RunPHPUnitTest(filter)
-    let l:old_folder = getcwd() " save current directory
-    if !filereadable("phpunit.xml")
-      cd %:p:h " cd into file's folder
-    endif
+"function! RunPHPUnitTest(filter)
+"    let l:old_folder = getcwd() " save current directory
+"    if !filereadable("phpunit.xml")
+"      cd %:p:h " cd into file's folder
+"    endif
+"
+"    if a:filter == 1
+"        "normal! T yw
+"        let result = system("vendor/bin/phpunit")
+"    elseif a:filter == 2
+"        "let result = system("phpunit")
+"        let l:method_name = matchstr(getline('.'), '\vfunction \zs(\w+)')
+"
+"        if !empty(l:method_name)
+"          echo "Testing method '" . l:method_name . "'"
+"          let result = system("vendor/bin/phpunit --no-coverage --filter ". l:method_name ." " . expand('%:t:r'). " " . @%)
+"        else
+"          let result = "Position cursor over line with test method declaration"
+"        endif
+"    else
+"        let result = system("vendor/bin/phpunit --no-coverage " . bufname("%"))
+"    endif
+"
+"    "let l:win_number = bufwinnr('__PHPUnit_Result__')
+"
+"    "if l:win_number == -1
+"    "  split __PHPUnit_Result__
+"    "else
+"    "  exe l:win_number . "wincmd w"
+"    "endif
+"
+"    "setlocal modifiable
+"    "normal! ggdG
+"    "setlocal buftype=nofile
+"    "call append(0, split(result, '\v\n'))
+"    "setlocal nomodifiable
+"    echo result
+"    cd `=l:old_folder` " returns to previous folder
+"endfunction
+"
+"function! PHPUnitRunAll()
+"  call RunPHPUnitTest(1)
+"endfunction
+"
+"function! PHPUnitRunFile()
+"  call RunPHPUnitTest(0)
+"endfunction
+"function! PHPUnitRunMethod()
+"  call RunPHPUnitTest(2)
+"endfunction
 
-    if a:filter == 1
-        "normal! T yw
-        let result = system("vendor/bin/phpunit")
-    elseif a:filter == 2
-        "let result = system("phpunit")
-        let l:method_name = matchstr(getline('.'), '\vfunction \zs(\w+)')
+"nnoremap <leader>u :call PHPUnitRunFile()<cr>
+"nnoremap <leader>f :call PHPUnitRunAll()<cr>
+"nnoremap <leader>m :call PHPUnitRunMethod()<cr>
 
-        if !empty(l:method_name)
-          echo "Testing method '" . l:method_name . "'"
-          let result = system("vendor/bin/phpunit --no-coverage --filter ". l:method_name ." " . expand('%:t:r'). " " . @%)
-        else
-          let result = "Position cursor over line with test method declaration"
-        endif
-    else
-        let result = system("vendor/bin/phpunit --no-coverage " . bufname("%"))
-    endif
+" https://robots.thoughtbot.com/running-specs-from-vim-sent-to-tmux-via-tslime
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+let g:rspec_command = 'call Send_to_Tmux("rspec {spec}\n")'
 
-    "let l:win_number = bufwinnr('__PHPUnit_Result__')
-
-    "if l:win_number == -1
-    "  split __PHPUnit_Result__
-    "else
-    "  exe l:win_number . "wincmd w"
-    "endif
-
-    "setlocal modifiable
-    "normal! ggdG
-    "setlocal buftype=nofile
-    "call append(0, split(result, '\v\n'))
-    "setlocal nomodifiable
-    echo result
-    cd `=l:old_folder` " returns to previous folder
-endfunction
-
-function! PHPUnitRunAll()
-  call RunPHPUnitTest(1)
-endfunction
-
-function! PHPUnitRunFile()
-  call RunPHPUnitTest(0)
-endfunction
-function! PHPUnitRunMethod()
-  call RunPHPUnitTest(2)
-endfunction
-
-nnoremap <leader>u :call PHPUnitRunFile()<cr>
-nnoremap <leader>f :call PHPUnitRunAll()<cr>
-nnoremap <leader>m :call PHPUnitRunMethod()<cr>
